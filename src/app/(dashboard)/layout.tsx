@@ -1,15 +1,17 @@
+'use client'
 import React from "react";
 import { AppSidebar } from "@/components/component/appSideBar";
 import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
+import { ThemeProvider } from "@/provider/theme.provider";
 
 function layout({ children }: { children: React.ReactNode }) {
   return (
     <div>
       <SidebarProvider>
         <AppSidebar />
-        <main>
+        <main className="w-full">
           <SidebarTrigger />
-          {children}
+          <ThemeProvider>{children}</ThemeProvider>
         </main>
       </SidebarProvider>
     </div>
