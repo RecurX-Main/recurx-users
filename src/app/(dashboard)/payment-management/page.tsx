@@ -1,48 +1,22 @@
-'use client'
+"use client";
 import React, { useState } from "react";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Search, ChevronDown, Filter } from "lucide-react";
+import { useTheme } from "@/context/theme.context";
 
 const Page = () => {
+  const { themeClasses } = useTheme();
   const [searchQuery, setSearchQuery] = useState("");
   const [statusFilter, setStatusFilter] = useState("Completed");
   const [dateRange, setDateRange] = useState("Date Range");
 
   //   @ts-ignore
-  const transactions = [
-  ];
-
-  // Skeleton row component
-  const SkeletonRow = ({ index }:{index:number}) => (
-    <tr key={index} className="border-b border-gray-100">
-      <td className="py-4 px-4">
-        <div className="h-4 bg-gray-200 rounded animate-pulse"></div>
-      </td>
-      <td className="py-4 px-4">
-        <div className="h-4 bg-gray-200 rounded animate-pulse"></div>
-      </td>
-      <td className="py-4 px-4">
-        <div className="h-4 bg-gray-200 rounded animate-pulse"></div>
-      </td>
-      <td className="py-4 px-4">
-        <div className="h-4 bg-gray-200 rounded animate-pulse"></div>
-      </td>
-      <td className="py-4 px-4">
-        <div className="h-4 bg-gray-200 rounded animate-pulse"></div>
-      </td>
-      <td className="py-4 px-4">
-        <div className="h-4 bg-gray-200 rounded animate-pulse"></div>
-      </td>
-      <td className="py-4 px-4">
-        <div className="h-4 bg-gray-200 rounded animate-pulse"></div>
-      </td>
-    </tr>
-  );
+  const transactions = [];
 
   return (
-    <div className="min-h-screen bg-gray-50 p-6">
+    <div className={`min-h-screen ${themeClasses.backgroudPrimary} p-6"`}>
       <div className="max-w-7xl mx-auto">
         <Card className="bg-white shadow-sm border-0">
           <CardHeader className="pb-4">
@@ -131,16 +105,8 @@ const Page = () => {
                   </tr>
                 </thead>
                 <tbody className="bg-white divide-y divide-gray-100">
-                  {/* Show skeleton rows when no data */}
-                  {transactions.length === 0 && (
-                    <>
-                      {Array.from({ length: 8 }, (_, index) => (
-                        <SkeletonRow key={index} index={index} />
-                      ))}
-                    </>
-                  )}
-
                   {/* Actual transaction rows would go here */}
+                  {/* @ts-ignore */}
                   {transactions?.map((transaction) => (
                     <tr
                       key={transaction.id}

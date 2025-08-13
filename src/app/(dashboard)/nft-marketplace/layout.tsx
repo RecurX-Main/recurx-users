@@ -1,14 +1,13 @@
 import React from "react";
 import LowerHeader from "@/components/component/lowerNavbar";
 
-function layout({ children }: { children: string }) {
+function layout({ children }: { children: React.ReactNode }) {
   return (
     <section>
       <LowerHeader
-        header="Subscription Management"
-        para="Manage your subscription plans on the blockchain"
+        header="NFT MarketPlace"
+        para="Manage and Create your own digital assests"
       />
-
       {children}
     </section>
   );

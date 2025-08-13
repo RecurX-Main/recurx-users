@@ -1,9 +1,13 @@
+"use client";
 import React from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Twitter, Linkedin, Send } from "lucide-react";
+import { useTheme } from "@/context/theme.context";
 
 const Page = () => {
+  const { themeClasses } = useTheme();
+
   const socialPlatforms = [
     {
       id: "twitter",
@@ -38,7 +42,9 @@ const Page = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 py-12 px-4">
+    <div
+      className={`min-h-screen  py-12 px-4  ${themeClasses.backgroudPrimary}`}
+    >
       <div className="max-w-6xl mx-auto">
         {/* Header Section */}
         <div className="text-center mb-12">

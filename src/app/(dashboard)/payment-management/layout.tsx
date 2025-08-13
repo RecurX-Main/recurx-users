@@ -4,11 +4,10 @@ import LowerHeader from "@/components/component/lowerNavbar";
 function layout({ children }: { children: string }) {
   return (
     <section>
-      <LowerHeader
-        header="Subscription Management"
-        para="Manage your subscription plans on the blockchain"
+      <LowerHeader 
+        header="Payment Mangement"
+        para="Monitor and manage all your  payments"
       />
-
       {children}
     </section>
   );

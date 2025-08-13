@@ -1,8 +1,12 @@
+'use client'
 import React from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Trophy, Medal, Award } from "lucide-react";
+import { useTheme } from "@/context/theme.context";
 
 const Page = () => {
+  const { themeClasses } = useTheme();
+
   const leaderboardData = [
     { rank: 1, user: "Sanya Malhotra", points: 50, position: "1st" },
     { rank: 2, user: "Sanya Malhotra", points: 50, position: "2nd" },
@@ -17,7 +21,6 @@ const Page = () => {
     { rank: 11, user: "Sanya Malhotra", points: 50, position: "11th" },
     { rank: 12, user: "Sanya Malhotra", points: 50, position: "12th" },
     { rank: 13, user: "Sanya Malhotra", points: 50, position: "13th" },
-
   ];
 
   const getRankIcon = (rank: number) => {
@@ -38,7 +41,7 @@ const Page = () => {
   };
 
   return (
-    <div className="">
+    <div className={`${themeClasses.backgroudPrimary}`}>
       <div className="mx-auto p-5">
         <Card className="bg-white shadow-lg border-0 rounded-2xl overflow-hidden">
           <CardContent className="p-0">

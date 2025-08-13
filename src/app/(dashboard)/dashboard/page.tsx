@@ -12,13 +12,15 @@ import {
   Globe,
   TrendingUp,
 } from "lucide-react";
+import { useTheme } from "@/context/theme.context";
 
 const Page = () => {
   const [selectedNetwork, setSelectedNetwork] = useState("Polygon");
   const [searchQuery, setSearchQuery] = useState("");
+  const { themeClasses } = useTheme();
 
   return (
-    <div className="bg-gradient-to-br from-blue-50 to-indigo-100 p-4 min-h-full min-w-full">
+    <div className={`  ${themeClasses.backgroudPrimary} p-4 h-screen`}>
       <div className="mx-auto grid grid-cols-1 md:grid-cols-2 gap-6">
         {/* Your Balance Card */}
         <Card className="bg-white shadow-lg border-0">
