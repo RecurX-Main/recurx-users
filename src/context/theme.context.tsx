@@ -2,11 +2,11 @@ import { createContext, useContext } from "react";
 
 // Create a theme context
 export const ThemeContext = createContext({
-  isBool: Boolean || null,
+  isDark: false,
   themeClasses: {
-    backgroudPrimary: String || null
+    backgroudPrimary: "",
   },
-  toggleTheme: () => null,
+  toggleTheme: () => {},
 });
 
 // Export the theme Provider

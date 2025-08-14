@@ -11,8 +11,6 @@ export const generateSmartContract = async (message: string) => {
   }
 };
 
-
-
 export const auditSmartContract = async (message: string) => {
   try {
     const response = await fetch("/api/v1/smartcontract/auditcontract", {
@@ -26,3 +24,30 @@ export const auditSmartContract = async (message: string) => {
   }
 };
 
+export const connectWalletHandler = async (address: string) => {
+  try {
+    const response = await fetch("/api/v1/wallet", {
+      method: "POST",
+      body: JSON.stringify({
+        wallet: address,
+      }),
+    });
+    const data = await response.json();
+    return data;
+  } catch (error) {
+    return error;
+  }
+};
+
+export const fetchWalletInfo = async () => {
+  try {
+    const response = await fetch("/api/v1/wallet", {
+      method: "GET",
+    });
+
+    const data = await response.json();
+    return data;
+  } catch (error) {
+    return error;
+  }
+};

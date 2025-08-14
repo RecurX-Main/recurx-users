@@ -1,23 +1,33 @@
 "use client";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import {
-  Wallet,
-  Send,
-  QrCode,
-  Search,
-  ChevronDown,
-  Globe,
-  TrendingUp,
-} from "lucide-react";
+import { Wallet, Search, ChevronDown, Globe, TrendingUp } from "lucide-react";
 import { useTheme } from "@/context/theme.context";
+import SendToken from "@/packages/ui/sendToken";
+import RecieveTokens from "@/packages/ui/recievetoken";
+import { fetchFunds } from "@/packages/libs/ether";
+
 
 const Page = () => {
   const [selectedNetwork, setSelectedNetwork] = useState("Polygon");
   const [searchQuery, setSearchQuery] = useState("");
   const { themeClasses } = useTheme();
+  const [amount, setAmount] = useState("0");
+
+  useEffect(() => {
+    async function userFunds() {
+      try {
+        const info = await fetchFunds();
+        setAmount(info);
+      } catch (error) {
+        console.log(error)
+        setAmount("0");
+      }
+    }
+    userFunds();
+  }, []);
 
   return (
     <div className={`  ${themeClasses.backgroudPrimary} p-4 h-screen`}>
@@ -39,7 +49,9 @@ const Page = () => {
 
             <div className="mb-6">
               <div className="flex items-baseline gap-2">
-                <span className="text-4xl font-bold text-gray-900">0.0</span>
+                <span className="text-4xl font-bold text-gray-900">
+                  {amount}
+                </span>
                 <span className="text-lg font-medium text-gray-600">MATIC</span>
               </div>
               <div className="flex items-center gap-1 text-gray-500">
@@ -49,14 +61,8 @@ const Page = () => {
             </div>
 
             <div className="flex gap-3">
-              <Button className="flex-1 bg-gray-100 text-gray-700 hover:bg-gray-200 border-0">
-                <Send className="w-4 h-4 mr-2" />
-                Send
-              </Button>
-              <Button className="flex-1 bg-gray-100 text-gray-700 hover:bg-gray-200 border-0">
-                <QrCode className="w-4 h-4 mr-2" />
-                Receive
-              </Button>
+              <SendToken address="" />
+              <RecieveTokens />
             </div>
           </CardContent>
         </Card>
@@ -79,8 +85,7 @@ const Page = () => {
                   onChange={(e) => setSelectedNetwork(e.target.value)}
                 >
                   <option value="Polygon">Polygon</option>
-                  <option value="Ethereum">Ethereum</option>
-                  <option value="BSC">BSC</option>
+                  {/* <option value="stellar">Stellar</option> */}
                 </select>
                 <ChevronDown className="absolute right-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-500 pointer-events-none" />
               </div>

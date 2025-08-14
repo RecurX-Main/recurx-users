@@ -1,12 +1,24 @@
 "use client";
-import React from "react";
+import React, { useEffect } from "react";
 import { AppSidebar } from "@/components/component/appSideBar";
 import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
 import { ThemeProvider } from "@/provider/theme.provider";
 import { UpperHeader } from "@/components/component/upperNavBar";
 import Chatbot from "@/components/component/chatbot";
+import { WalletProvider } from "@/provider/wallet.provider";
+import { useRouter } from "next/navigation";
+import { useSession } from "next-auth/react";
 
-function layout({ children }: { children: React.ReactNode }) {
+function Layout({ children }: { children: React.ReactNode }) {
+  const router = useRouter();
+  const { data: session } = useSession();
+  useEffect(() => {
+    if (!session) {
+      router.push("/");
+      return;
+    }
+  }, []);
+
   return (
     <div>
       <SidebarProvider>
@@ -14,9 +26,11 @@ function layout({ children }: { children: React.ReactNode }) {
         <main className="w-full">
           <SidebarTrigger />
           <ThemeProvider>
-            <UpperHeader />
-            {children}
-            <Chatbot />
+            <WalletProvider>
+              <UpperHeader />
+              {children}
+              <Chatbot />
+            </WalletProvider>
           </ThemeProvider>
         </main>
       </SidebarProvider>
@@ -24,4 +38,4 @@ function layout({ children }: { children: React.ReactNode }) {
   );
 }
 
-export default layout;
+export default Layout;

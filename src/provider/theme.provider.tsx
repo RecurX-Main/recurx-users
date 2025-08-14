@@ -2,7 +2,7 @@ import { ThemeContext } from "@/context/theme.context";
 import { ReactNode, useEffect, useState } from "react";
 
 export const ThemeProvider = ({ children }: { children: ReactNode }) => {
-  const [isDark, setIsDark] = useState<Boolean | null>(null);
+  const [isDark, setIsDark] = useState(false);
 
   // Get the theme from local storage and if not exist set it
   useEffect(() => {

@@ -3,17 +3,18 @@
 import {
   Calendar,
   Home,
-  Inbox,
-  Search,
   Settings,
   Users,
   CreditCard,
   Trophy,
   LogOut,
+  Store,
+  NewspaperIcon,
 } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
+import { signOut } from "next-auth/react";
 
 import {
   Sidebar,
@@ -45,22 +46,12 @@ const items = [
   {
     title: "NFT Marketplace",
     url: "/nft-marketplace",
-    icon: Calendar,
+    icon: Store,
   },
   {
     title: "News",
     url: "/news",
-    icon: Calendar,
-  },
-  {
-    title: "Smart Contract Generator",
-    url: "/smartcontract-generator",
-    icon: Calendar,
-  },
-  {
-    title: "Smart Contract Audit",
-    url: "/smartcontract-audit",
-    icon: Calendar,
+    icon: NewspaperIcon,
   },
   {
     title: "Leader board",
@@ -76,14 +67,9 @@ const items = [
 
 const bottomItems = [
   {
-    title: "Settings",
-    url: "/settings",
+    title: "Profile",
+    url: "/profile",
     icon: Settings,
-  },
-  {
-    title: "Logout",
-    url: "/logout",
-    icon: LogOut,
   },
 ];
 
@@ -91,11 +77,16 @@ export function AppSidebar() {
   const pathname = usePathname();
 
   return (
-    <Sidebar className="border-r border-gray-200 bg-white">
+    <Sidebar className="border-r border-gray-200 bg-white rounded-4xl shadow-md shadow-gray-200">
       <SidebarContent className="flex flex-col justify-between h-full py-4">
         {/* Main Navigation */}
+
         <SidebarGroup>
           <SidebarGroupContent>
+            <SidebarContent>
+              <img src="./image-light.png" alt="" className="w-36" />
+            </SidebarContent>
+
             <SidebarMenu className="space-y-2">
               {items.map((item) => {
                 const isActive = pathname === item.url;
@@ -153,6 +144,14 @@ export function AppSidebar() {
                   </SidebarMenuItem>
                 );
               })}
+              <button
+                onClick={() => signOut()}
+                className="flex items-center gap-2 px-4 py-2 text-sm font-medium text-red-600 
+             bg-red-50 rounded-lg hover:bg-red-100 transition-colors"
+              >
+                <LogOut className="w-4 h-4" />
+                Log Out
+              </button>
             </SidebarMenu>
           </SidebarGroupContent>
         </SidebarGroup>

@@ -13,7 +13,6 @@ import {
 import { ShoppingBag, ExternalLink, HelpCircle } from "lucide-react";
 import { useRouter, useSearchParams } from "next/navigation";
 import Image from "next/image";
-import Cookies from "js-cookie";
 
 export default function Page() {
   const [mounted, setMounted] = useState(false);
@@ -21,19 +20,8 @@ export default function Page() {
   const searchParams = useSearchParams();
   const error = searchParams.get("error");
 
-  const handleRole = (role:string) => {
-    if (role === "user") {
-      Cookies.set("role", JSON.stringify("user"), { expires: 2 });
-      return;
-    }
-  };
-
   useEffect(() => {
     setMounted(true);
-    const ref = searchParams.get("ref");
-    if (ref) {
-      Cookies.set("ref", JSON.stringify(ref), { expires: 7 });
-    }
   }, [router]);
 
   if (!mounted) return null;
@@ -82,7 +70,6 @@ export default function Page() {
             )}
             <Button
               onClick={() => {
-                handleRole("user");
                 signIn("google", {
                   callbackUrl: "/dashboard",
                 });

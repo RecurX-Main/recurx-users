@@ -9,7 +9,8 @@ import {
   DialogContent,
   DialogFooter,
 } from "@/components/ui/dialog";
-import { TrendingUp } from "lucide-react";
+import { TrendingUp, Send } from "lucide-react";
+import { sendToken } from "../libs/ether";
 // import { sendToken, sendTokenMassa } from "../lib/payment";
 import {
   Select,
@@ -18,14 +19,14 @@ import {
   SelectContent,
   SelectItem,
 } from "@/components/ui/select";
+import { toast } from "sonner";
 
-export default function SendToken({ address }:{address:string}) {
+export default function SendToken({ address }: { address: string }) {
   const [open, setOpen] = useState(false);
   const [toAddress, setToAddress] = useState("");
   const [amount, setAmount] = useState("");
   const [blockchain, setBlockchain] = useState("polygon");
   const [loading, setLoading] = useState(false);
-
 
   useEffect(() => {
     if (address) {
@@ -41,14 +42,15 @@ export default function SendToken({ address }:{address:string}) {
     try {
       setLoading(true);
       if (blockchain === "polygon") {
-        // await sendToken(toAddress, parseFloat(amount)); // assuming this signature
+        await sendToken(toAddress, parseFloat(amount));
+        toast("Successfully Funds transfer");
         setOpen(false);
       }
       setToAddress("");
       setAmount("");
     } catch (err) {
       console.error(err);
-      alert("❌ Error sending token");
+      toast("Failed to transfer the funds");
     } finally {
       setLoading(false);
     }
@@ -59,19 +61,13 @@ export default function SendToken({ address }:{address:string}) {
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Button
-          variant="outline"
-          className="w-16 h-16 rounded-full p-0 flex items-center justify-center"
-        >
-          <div className="flex flex-col items-center justify-center gap-1 text-xs">
-            <TrendingUp className="h-4 w-4" />
-            <span>Send</span>
-          </div>
+        <Button className="flex-1 bg-gray-100 text-gray-700 hover:bg-gray-200 border-0">
+          <Send className="w-4 h-4 mr-2" />
+          Send
         </Button>
       </DialogTrigger>
 
       <DialogContent className="sm:max-w-md">
-    
         <div className="grid gap-4 py-4">
           <div>
             <label className="text-sm font-medium">To Address</label>

@@ -3,7 +3,7 @@ import { PrismaAdapter } from "@next-auth/prisma-adapter";
 import { prisma } from "./prisma";
 import { cookies } from "next/headers";
 
-let ID:string;
+let ID:number;
 export const authOptions = {
   adapter: PrismaAdapter(prisma),
   providers: [
@@ -42,7 +42,6 @@ export const authOptions = {
       await prisma.user.update({
         where: { id: referringUser.id },
         data: {
-          role: role,
           point: {
             increment: 75,
           },
@@ -54,28 +53,7 @@ export const authOptions = {
     secret: process.env.NEXTAUTH_SECRET,
   },
   events: {
-    async signIn({ user, account }) {
-      const cookieStore = await cookies();
-      const role = cookieStore.get("role");
-      const roleInfo = JSON.parse(role.value);
-      const findRoleExists = await prisma.user.findUnique({
-        where: {
-          email: user.email,
-        },
-      });
-      if (roleInfo != findRoleExists.role) {
-        await prisma.user.update({
-          where: {
-            email: user.email,
-          },
-          data: {
-            role: roleInfo,
-          },
-        });
-      }else{
-        return false
-      }
-      
+    async signIn({ user, account }:{user:any,account:any}) {  
       await prisma.user.update({
         where: { email: user.email },
         data: {

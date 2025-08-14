@@ -12,10 +12,12 @@ import {
 } from "@/components/ui/dialog";
 import { Copy, QrCode } from "lucide-react";
 import { toast } from "sonner";
+import { useWallet } from "@/context/wallet.context";
 
-export default function RecieveTokens({ address }: { address: string }) {
+export default function RecieveTokens() {
   const [open, setOpen] = useState(false);
   const qrRef = useRef(null);
+  const {address} = useWallet();
 
   const handleCopy = async () => {
     try {
@@ -29,12 +31,9 @@ export default function RecieveTokens({ address }: { address: string }) {
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Button
-          variant="outline"
-          className="w-16 h-16 rounded-full p-0 flex flex-col items-center justify-center gap-1 text-xs"
-        >
-          <QrCode className="h-4 w-4" />
-          <span>Recieve</span>
+        <Button className="flex-1 bg-gray-100 text-gray-700 hover:bg-gray-200 border-0">
+          <QrCode className="w-4 h-4 mr-2" />
+          Receive
         </Button>
       </DialogTrigger>
 

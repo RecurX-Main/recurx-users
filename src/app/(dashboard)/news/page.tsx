@@ -32,7 +32,7 @@ async function Page() {
               return (
                 <Card
                   key={index}
-                  className="bg-[#111111] border border-[#222222] text-white hover:shadow-lg hover:border-blue-600 transition-shadow duration-300 cursor-pointer"
+                  className="bg-white border border-[#222222] text-black hover:shadow-lg hover:border-blue-600 transition-shadow duration-300 cursor-pointer"
                 >
                   <CardHeader>
                     {/* Article Image */}
@@ -44,18 +44,18 @@ async function Page() {
                       />
                     </div>
 
-                    <CardTitle className="text-xl font-semibold line-clamp-2 mb-2 text-white">
+                    <CardTitle className="text-xl font-semibold line-clamp-2 mb-2 text-black">
                       {b.title}
                     </CardTitle>
 
-                    <CardDescription className="text-gray-400 line-clamp-3 mb-4">
+                    <CardDescription className="text-gray-700 line-clamp-3 mb-4">
                       {b.description}
                     </CardDescription>
                   </CardHeader>
 
                   <CardContent>
                     {/* Article Meta Information */}
-                    <div className="flex items-center justify-between text-sm text-gray-500 mb-4">
+                    <div className="flex items-center justify-between text-sm text-gray-600 mb-4">
                       <span>{formatDate(b.createdAt)}</span>
                     </div>
 
@@ -71,7 +71,7 @@ async function Page() {
                       <div className="w-8 h-8 bg-gray-600 rounded-full flex items-center justify-center text-xs font-medium text-white mr-3">
                         {b.author?.charAt(0) ?? "A"}
                       </div>
-                      <span className="text-sm text-gray-300">{b.author}</span>
+                      <span className="text-sm text-gray-700">{b.author}</span>
                     </div>
                   </CardContent>
                 </Card>

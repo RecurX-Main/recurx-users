@@ -36,10 +36,7 @@ const Page = () => {
     },
   ];
 
-  const handleConnect = (platform: string) => {
-    // Handle connection logic here
-    console.log(`Connecting to ${platform}`);
-  };
+ 
 
   return (
     <div
@@ -88,7 +85,6 @@ const Page = () => {
                   {/* Connect Button */}
                   <Button
                     className={`w-full ${platform.buttonColor} text-white font-medium py-3 rounded-lg transition-colors duration-200`}
-                    // onClick={() => handleConnect(platform.id)}
                   >
                     {platform.buttonText}
                   </Button>
