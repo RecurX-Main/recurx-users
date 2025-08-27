@@ -9,7 +9,6 @@ import SendToken from "@/packages/ui/sendToken";
 import RecieveTokens from "@/packages/ui/recievetoken";
 import { fetchFunds } from "@/packages/libs/ether";
 
-
 const Page = () => {
   const [selectedNetwork, setSelectedNetwork] = useState("Polygon");
   const [searchQuery, setSearchQuery] = useState("");
@@ -22,7 +21,7 @@ const Page = () => {
         const info = await fetchFunds();
         setAmount(info);
       } catch (error) {
-        console.log(error)
+        console.log(error);
         setAmount("0");
       }
     }
@@ -85,7 +84,7 @@ const Page = () => {
                   onChange={(e) => setSelectedNetwork(e.target.value)}
                 >
                   <option value="Polygon">Polygon</option>
-                  {/* <option value="stellar">Stellar</option> */}
+                  <option value="yellow">Yellow</option>
                 </select>
                 <ChevronDown className="absolute right-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-500 pointer-events-none" />
               </div>
@@ -93,11 +92,20 @@ const Page = () => {
 
             <div className="text-center">
               <div className="w-16 h-16 bg-purple-100 rounded-full flex items-center justify-center mx-auto mb-3">
-                <div className="w-10 h-10 bg-purple-600 rounded-full flex items-center justify-center">
-                  <span className="text-white font-semibold">P</span>
+                <div
+                  className={`w-10 h-10 ${
+                    selectedNetwork === "yellow"
+                      ? "bg-yellow-500"
+                      : "bg-purple-600"
+                  } rounded-full flex items-center justify-center`}
+                >
+                  <span className="text-white font-semibold">
+                    {" "}
+                    {selectedNetwork === "yellow" ? "Y" : "P"}
+                  </span>
                 </div>
               </div>
-              <h3 className="font-semibold text-gray-900">Polygon</h3>
+              <h3 className="font-semibold text-gray-900">{selectedNetwork}</h3>
               <p className="text-sm text-gray-500">Your Network</p>
             </div>
           </CardContent>
