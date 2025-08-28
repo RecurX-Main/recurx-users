@@ -8,12 +8,18 @@ import { useTheme } from "@/context/theme.context";
 import SendToken from "@/packages/ui/sendToken";
 import RecieveTokens from "@/packages/ui/recievetoken";
 import { fetchFunds } from "@/packages/libs/ether";
+import { findUserWallet } from "@/handlers/handlers";
 
 const Page = () => {
   const [selectedNetwork, setSelectedNetwork] = useState("Polygon");
   const [searchQuery, setSearchQuery] = useState("");
+  const [userInfo, setUserInfo] = useState({
+    email: null,
+    address: null,
+  });
   const { themeClasses } = useTheme();
   const [amount, setAmount] = useState("0");
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     async function userFunds() {
@@ -27,6 +33,39 @@ const Page = () => {
     }
     userFunds();
   }, []);
+
+  async function findUser() {
+    try {
+      if (searchQuery.includes("@")) {
+        setLoading(true);
+        const res = await findUserWallet("email", searchQuery);
+        setUserInfo({
+          email: res.data.email,
+          address: res.data.wallet,
+        });
+        setSearchQuery("");
+        setLoading(false);
+      } else {
+        setLoading(true);
+        const res = await findUserWallet("address", searchQuery);
+        setUserInfo({
+          email: res.data[0].email,
+          address: res.data[0].wallet,
+        });
+        setSearchQuery("");
+        setLoading(false);
+      }
+    } catch (error) {
+      setLoading(false);
+      setUserInfo({
+        email: "",
+        address: "",
+      });
+      setSearchQuery("");
+    } finally {
+      setLoading(false);
+    }
+  }
 
   return (
     <div className={`  ${themeClasses.backgroudPrimary} p-4 h-screen`}>
@@ -134,12 +173,67 @@ const Page = () => {
                   onChange={(e) => setSearchQuery(e.target.value)}
                 />
               </div>
-              <Button className="px-8 bg-blue-600 hover:bg-blue-700 text-white">
-                Search
+
+              <Button
+                disabled={searchQuery.length === 0 && loading}
+                onClick={findUser}
+                className="px-8 bg-blue-600 hover:bg-blue-700 text-white"
+              >
+                {loading ? "Searching.." : "Search"}
               </Button>
             </div>
           </CardContent>
         </Card>
+
+        {userInfo.email != null && userInfo.email.length === 0 && (
+          <div className="flex items-center gap-2 p-4 rounded-xl border border-red-200 bg-red-50 text-red-600 text-sm font-medium shadow-sm w-full">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              className="h-5 w-5 text-red-500"
+              viewBox="0 0 20 20"
+              fill="currentColor"
+            >
+              <path
+                fillRule="evenodd"
+                d="M18 10c0 4.418-3.582 8-8 8s-8-3.582-8-8 3.582-8 
+           8-8 8 3.582 8 8zm-7-4a1 1 0 11-2 0 1 1 0 
+           012 0zM9 9a1 1 0 000 2v3a1 1 0 001 
+           1h.01a1 1 0 100-2H11V9a1 1 0 00-2 0z"
+                clipRule="evenodd"
+              />
+            </svg>
+            <span>User not found</span>
+          </div>
+        )}
+
+        {/* User info */}
+        {userInfo.email && (
+          <Card className="bg-white shadow-xl border border-gray-100 rounded-2xl md:col-span-2 hover:shadow-2xl transition-shadow duration-300">
+            <CardContent className="p-6 flex flex-col gap-4">
+              {/* User Info Section */}
+              <div className="flex items-center gap-4">
+                {/* Avatar Circle */}
+                <div className="w-12 h-12 rounded-full bg-gradient-to-r from-indigo-500 to-purple-500 flex items-center justify-center text-white font-semibold text-lg shadow-md">
+                  {userInfo.email.charAt(0).toUpperCase()}
+                </div>
+
+                <div className="flex-1">
+                  <p className="text-lg font-semibold text-gray-800">
+                    {userInfo.email}
+                  </p>
+                  <p className="text-sm text-gray-500 truncate">
+                    {userInfo.address}
+                  </p>
+                </div>
+              </div>
+
+              {/* Action Section */}
+              <div className="flex justify-end">
+                <SendToken address={userInfo.address} />
+              </div>
+            </CardContent>
+          </Card>
+        )}
       </div>
     </div>
   );

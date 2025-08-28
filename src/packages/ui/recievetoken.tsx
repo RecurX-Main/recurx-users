@@ -46,7 +46,7 @@ export default function RecieveTokens() {
 
         <div className="flex items-center gap-2">
           <span className="text-sm font-mono">
-            {address
+            {address && address
               ? `${address?.slice(0, 6)}...${address?.slice(-4)}`
               : "Connect Wallet"}
           </span>

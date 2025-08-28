@@ -62,7 +62,7 @@ function Chatbot() {
   return (
     <div className="fixed bottom-4 right-4 z-50">
       {visible ? (
-        <div className="w-[20rem] h-[48rem] bg-white rounded-xl shadow-xl flex flex-col overflow-hidden border border-gray-200">
+        <div className="w-[20rem] h-[60vh] bg-white rounded-xl shadow-xl flex flex-col overflow-hidden border border-gray-200">
           {/* Header */}
           <div
             className={`bg-blue-400 text-white p-3 flex justify-between items-center`}

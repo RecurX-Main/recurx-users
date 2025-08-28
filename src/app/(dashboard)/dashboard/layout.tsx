@@ -2,9 +2,7 @@ import React, { ReactNode } from "react";
 import LowerHeader from "@/components/component/lowerNavbar";
 
 function layout({ children }: { children: ReactNode }) {
-    
-
-    return (
+  return (
     <section>
       <LowerHeader
         header="Dashboard"

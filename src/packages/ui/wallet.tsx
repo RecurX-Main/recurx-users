@@ -10,6 +10,15 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
+
+declare global {
+  interface Window {
+    ethereum?: {
+      isMetaMask?: boolean;
+      request?: (...args: any[]) => Promise<any>;
+    };
+  }
+}
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { useWallet } from "@/context/wallet.context";
@@ -17,14 +26,33 @@ import { connectWallet } from "../libs/ether";
 import { connectWalletHandler } from "@/handlers/handlers";
 
 function WalletProvider() {
-  const { useAddress, address,disConnectWallet } = useWallet();
+  const { useAddress, address, disConnectWallet } = useWallet();
   const [isConnect, setIsConnected] = useState(false);
+  const [isWalletPresent, setIsWalletPresent] = useState({
+    wallet: "",
+    isEnable: false,
+  });
 
   useEffect(() => {
     if (address) {
       setIsConnected(true);
     }
   }, [address]);
+
+  useEffect(() => {
+    const res = window?.ethereum?.isMetaMask;
+    if (res === true && typeof res != undefined) {
+      setIsWalletPresent({
+        wallet: "metamask",
+        isEnable: true,
+      });
+    } else {
+      setIsWalletPresent({
+        wallet: "metamask",
+        isEnable: false,
+      });
+    }
+  }, []);
 
   const handleWalletConnect = async (walletName: string) => {
     try {
@@ -42,16 +70,19 @@ function WalletProvider() {
     }
   };
 
-  const handleRemoveWallet = ()=>{
-        disConnectWallet()
-        setIsConnected(false)
-  }
+  const handleRemoveWallet = () => {
+    disConnectWallet();
+    setIsConnected(false);
+  };
 
   if (isConnect) {
     return (
       <>
-        <button onClick={handleRemoveWallet} className="bg-[#1093FF] py-2 px-4 text-white  rounded-3xl">
-            Disconnect Wallet
+        <button
+          onClick={handleRemoveWallet}
+          className="bg-[#1093FF] py-2 px-4 text-white  rounded-3xl"
+        >
+          Disconnect Wallet
         </button>
       </>
     );
@@ -78,7 +109,17 @@ function WalletProvider() {
               <CardContent className="p-4">
                 <div
                   className="flex items-center gap-4"
-                  onClick={() => handleWalletConnect("MetaMask")}
+                  onClick={() => {
+                    if (
+                      isWalletPresent.wallet === "metamask" &&
+                      isWalletPresent.isEnable === false
+                    ) {
+                      return;
+                    } else {
+                      console.log("running the else");
+                      handleWalletConnect("MetaMask");
+                    }
+                  }}
                 >
                   <img
                     className="w-12 h-12 rounded-lg"
@@ -88,7 +129,9 @@ function WalletProvider() {
                   <div>
                     <h3 className="font-semibold">MetaMask</h3>
                     <p className="text-sm text-gray-600">
-                      Connect using MetaMask wallet
+                      {isWalletPresent.isEnable
+                        ? "Connect using MetaMask wallet"
+                        : "Please install Metamask wallet first"}
                     </p>
                   </div>
                 </div>

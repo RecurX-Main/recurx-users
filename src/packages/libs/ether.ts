@@ -33,6 +33,7 @@ export const connectWallet = async () => {
 export const sendToken = async (toAddress: string, amount: number) => {
   try {
     const signer = await Provider();
+    const fromWalletAddress = await signer.getAddress();
     const tokenContract = new ethers.Contract(
       "0x11fE4B6AE13d2a6055C8D9cF65c55bac32B5d844",
       ERC20_ABI,
@@ -40,10 +41,21 @@ export const sendToken = async (toAddress: string, amount: number) => {
     );
     const parsedAmount = ethers.parseEther(amount.toString());
     const tx = await tokenContract.transfer(toAddress, parsedAmount);
-    await tx.wait();
+    const txHash = await tx.wait();
+    fetch("/api/v1/transcations", {
+      method: "POST",
+      body: JSON.stringify({
+        transactionHash: txHash.logs[0].transactionHash,
+        fromAddress: fromWalletAddress,
+        toAddress: toAddress,
+        token: "POL",
+        amount: JSON.stringify(amount),
+        network: "Polygon",
+        status: JSON.stringify(txHash.status),
+      }),
+    });
     return true;
   } catch (error) {
-    console.log(error);
     return false;
   }
 };

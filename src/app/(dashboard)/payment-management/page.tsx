@@ -1,22 +1,47 @@
 "use client";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Search, ChevronDown, Filter } from "lucide-react";
 import { useTheme } from "@/context/theme.context";
+import { useWallet } from "@/context/wallet.context";
+import { findUsersTransactions } from "@/handlers/handlers";
 
 const Page = () => {
   const { themeClasses } = useTheme();
+  const { address } = useWallet();
   const [searchQuery, setSearchQuery] = useState("");
   const [statusFilter, setStatusFilter] = useState("Completed");
   const [dateRange, setDateRange] = useState("Date Range");
+  const [transactions, setTransactions] = useState([]);
 
-  //   @ts-ignore
-  const transactions = [];
+  useEffect(() => {
+    if (!address) {
+      setTransactions([]);
+      return;
+    }
+    findUsersTransactions(address).then((info) => {
+      setTransactions(info.data || []);
+    });
+  }, [address]);
+
+  const filteredTransactions = transactions.filter((tx) => {
+    const matchesSearch =
+      tx.transactionHash?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      tx.toWalletAddress?.toLowerCase().includes(searchQuery.toLowerCase());
+
+    const matchesStatus =
+      statusFilter === "All" ||
+      (statusFilter === "Completed" && tx.status === "1") ||
+      (statusFilter === "Failed" && tx.status === "0") ||
+      (statusFilter === "Pending" && tx.status === "Pending");
+
+    return matchesSearch && matchesStatus;
+  });
 
   return (
-    <div className={`min-h-screen ${themeClasses.backgroudPrimary} p-6"`}>
+    <div className={`min-h-screen ${themeClasses.backgroudPrimary} p-6`}>
       <div className="max-w-7xl mx-auto">
         <Card className="bg-white shadow-sm border-0">
           <CardHeader className="pb-4">
@@ -82,16 +107,16 @@ const Page = () => {
                 <thead className="bg-gray-50 border-y border-gray-200">
                   <tr>
                     <th className="text-left py-3 px-4 text-sm font-medium text-gray-600 uppercase tracking-wider">
-                      Transaction ID
+                      Transaction Hash
                     </th>
                     <th className="text-left py-3 px-4 text-sm font-medium text-gray-600 uppercase tracking-wider">
-                      Customer
+                      Wallet Address
                     </th>
                     <th className="text-left py-3 px-4 text-sm font-medium text-gray-600 uppercase tracking-wider">
                       Amount
                     </th>
                     <th className="text-left py-3 px-4 text-sm font-medium text-gray-600 uppercase tracking-wider">
-                      Method
+                      Network
                     </th>
                     <th className="text-left py-3 px-4 text-sm font-medium text-gray-600 uppercase tracking-wider">
                       Status
@@ -105,80 +130,76 @@ const Page = () => {
                   </tr>
                 </thead>
                 <tbody className="bg-white divide-y divide-gray-100">
-                  {/* Actual transaction rows would go here */}
-                  {/* @ts-ignore */}
-                  {transactions?.map((transaction) => (
-                    <tr
-                      key={transaction.id}
-                      className="hover:bg-gray-50 transition-colors"
-                    >
-                      <td className="py-4 px-4 text-sm text-gray-900">
-                        {transaction.id}
-                      </td>
-                      <td className="py-4 px-4 text-sm text-gray-900">
-                        {transaction.customer}
-                      </td>
-                      <td className="py-4 px-4 text-sm text-gray-900">
-                        {transaction.amount}
-                      </td>
-                      <td className="py-4 px-4 text-sm text-gray-900">
-                        {transaction.method}
-                      </td>
-                      <td className="py-4 px-4">
-                        <span
-                          className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${
-                            transaction.status === "Completed"
-                              ? "bg-green-100 text-green-800"
+                  {filteredTransactions.length > 0 ? (
+                    filteredTransactions.map((transaction) => (
+                      <tr
+                        key={transaction.id}
+                        className="hover:bg-gray-50 transition-colors"
+                      >
+                        <td className="py-4 px-4 text-sm text-gray-900">
+                          {transaction.transcationHash?.slice(0, 10)}...
+                        </td>
+                        <td className="py-4 px-4 text-sm text-gray-900">
+                          {transaction.toWalletAddress?.slice(0, 10)}...
+                        </td>
+                        <td className="py-4 px-4 text-sm text-gray-900">
+                          {transaction.amount}
+                        </td>
+                        <td className="py-4 px-4 text-sm text-gray-900">
+                          {transaction.network}
+                        </td>
+                        <td className="py-4 px-4">
+                          <span
+                            className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${
+                              transaction.status === "1"
+                                ? "bg-green-100 text-green-800"
+                                : transaction.status === "Pending"
+                                ? "bg-yellow-100 text-yellow-800"
+                                : "bg-red-100 text-red-800"
+                            }`}
+                          >
+                            {transaction.status === "1"
+                              ? "Success"
                               : transaction.status === "Pending"
-                              ? "bg-yellow-100 text-yellow-800"
-                              : "bg-red-100 text-red-800"
-                          }`}
-                        >
-                          {transaction.status}
-                        </span>
-                      </td>
-                      <td className="py-4 px-4 text-sm text-gray-900">
-                        {transaction.date}
-                      </td>
-                      <td className="py-4 px-4">
-                        <Button
-                          variant="ghost"
-                          size="sm"
-                          className="text-blue-600 hover:text-blue-800"
-                        >
-                          View
-                        </Button>
+                              ? "Pending"
+                              : "Failed"}
+                          </span>
+                        </td>
+                        <td className="py-4 px-4 text-sm text-gray-900">
+                          {transaction.createdAt}
+                        </td>
+                        <td className="py-4 px-4">
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            className="text-blue-600 hover:text-blue-800"
+                          >
+                            View
+                          </Button>
+                        </td>
+                      </tr>
+                    ))
+                  ) : (
+                    <tr>
+                      <td colSpan={7} className="text-center py-12">
+                        <Filter className="w-12 h-12 mx-auto mb-4 text-gray-300" />
+                        <h3 className="text-lg font-medium text-gray-900 mb-2">
+                          No transactions found
+                        </h3>
+                        <p className="text-gray-500 max-w-sm mx-auto">
+                          There are no transactions matching your current
+                          filters. Try adjusting your search criteria.
+                        </p>
                       </td>
                     </tr>
-                  ))}
+                  )}
                 </tbody>
               </table>
             </div>
 
-            {/* Empty State */}
-            {transactions.length === 0 && (
-              <div className="text-center py-12">
-                <div className="text-gray-400 mb-2">
-                  <Filter className="w-12 h-12 mx-auto mb-4 opacity-50" />
-                </div>
-                <h3 className="text-lg font-medium text-gray-900 mb-2">
-                  No transactions found
-                </h3>
-                <p className="text-gray-500 max-w-sm mx-auto">
-                  There are no transactions matching your current filters. Try
-                  adjusting your search criteria.
-                </p>
-              </div>
-            )}
-
-            {/* Pagination would go here */}
+            {/* Pagination */}
             <div className="px-6 py-4 border-t border-gray-200 bg-gray-50">
               <div className="flex items-center justify-between">
-                <p className="text-sm text-gray-700">
-                  Showing <span className="font-medium">0</span> to{" "}
-                  <span className="font-medium">0</span> of{" "}
-                  <span className="font-medium">0</span> results
-                </p>
                 <div className="flex items-center gap-2">
                   <Button variant="outline" size="sm" disabled>
                     Previous
