@@ -20,7 +20,7 @@ export const metadata: Metadata = {
   title: "Recurx",
   description: "The Decentralized payment solution",
   icons:{
-    icon:"./favicon.ico"
+    icon:"/favicon.ico"
   }
 };
 
